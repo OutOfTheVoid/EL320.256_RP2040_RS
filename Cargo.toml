@@ -1,0 +1,16 @@
+[package]
+name = "rp2040_test"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+waveshare-rp2040-zero = { version = "0.8" }
+embedded-hal = "1.0"
+panic-halt = "0.2"
+cortex-m-rt = "0.7"
+fugit = "0.3"
+nb = "1.0"
+critical-section = { version = "1.0.0" }
+embedded_hal_0_2 = { package = "embedded-hal", version = "0.2.5", features = ["unproven"] }
