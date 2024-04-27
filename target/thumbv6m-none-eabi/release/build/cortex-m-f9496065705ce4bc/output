@@ -1,4 +1,0 @@
-cargo:rustc-link-lib=static=cortex-m
-cargo:rustc-link-search=/Users/liam/dmd_driver/target/thumbv6m-none-eabi/release/build/cortex-m-f9496065705ce4bc/out
-cargo:rustc-cfg=cortex_m
-cargo:rustc-cfg=armv6m

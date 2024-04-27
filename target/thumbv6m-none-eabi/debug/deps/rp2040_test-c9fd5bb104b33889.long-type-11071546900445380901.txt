@@ -1,1 +1,0 @@
-(waveshare_rp2040_zero::rp2040_hal::gpio::Pin<Gpio2, FunctionSpi, PullDown>, waveshare_rp2040_zero::rp2040_hal::gpio::Pin<Gpio3, FunctionSpi, PullDown>)

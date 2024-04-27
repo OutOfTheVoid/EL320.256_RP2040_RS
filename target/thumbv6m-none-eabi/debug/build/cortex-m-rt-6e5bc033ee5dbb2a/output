@@ -1,5 +1,0 @@
-cargo:rustc-cfg=cortex_m
-cargo:rustc-cfg=armv6m
-cargo:rustc-link-search=/Users/liam/dmd_driver/target/thumbv6m-none-eabi/debug/build/cortex-m-rt-6e5bc033ee5dbb2a/out
-cargo:rerun-if-changed=build.rs
-cargo:rerun-if-changed=link.x.in

@@ -4,7 +4,7 @@
 mod swapchain;
 mod framebuffer;
 
-use embedded_hal::{digital::OutputPin, spi::SpiBus};
+use embedded_hal::digital::OutputPin;
 use embedded_hal_0_2::timer::CountDown;
 use fugit::{ExtU32, ExtU32Ceil, RateExtU32};
 use panic_halt as _;
@@ -13,7 +13,7 @@ use swapchain::Swapchain;
 use core::cell::RefCell;
 use critical_section::Mutex;
 
-use waveshare_rp2040_zero::{hal::{self as hal, clocks::ClocksManager, dma::{single_buffer, DMAExt, SingleChannel}, gpio::{bank0::*, FunctionSioOutput, FunctionSpi, Pin, PinId, PinState, PullDown, PullNone, SioOutput}, resets, spi::FrameFormat, timer::{Alarm, Alarm0}, Clock, Spi, Timer}, XOSC_CRYSTAL_FREQ};
+use waveshare_rp2040_zero::{hal::{self as hal, clocks::ClocksManager, dma::{single_buffer, DMAExt, SingleChannel}, gpio::{bank0::*, FunctionSioOutput, FunctionSpi, Pin, PinState, PullDown}, spi::FrameFormat, timer::{Alarm, Alarm0}, Clock, Spi, Timer}, XOSC_CRYSTAL_FREQ};
 use hal::pac;
 use pac::interrupt;
 

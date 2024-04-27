@@ -1,3 +1,0 @@
-cargo:rustc-link-search=/Users/liam/dmd_driver/target/debug/build/cortex-m-rt-745bbf06c1398be1/out
-cargo:rerun-if-changed=build.rs
-cargo:rerun-if-changed=link.x.in

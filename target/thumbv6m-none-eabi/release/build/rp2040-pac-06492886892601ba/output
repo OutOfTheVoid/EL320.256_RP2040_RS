@@ -1,3 +1,0 @@
-cargo:rustc-link-search=/Users/liam/dmd_driver/target/thumbv6m-none-eabi/release/build/rp2040-pac-06492886892601ba/out
-cargo:rerun-if-changed=device.x
-cargo:rerun-if-changed=build.rs

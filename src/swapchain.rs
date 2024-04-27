@@ -1,12 +1,14 @@
-use critical_section::{CriticalSection, Mutex};
-use embedded_hal_0_2::can::Frame;
+use critical_section::Mutex;
 use core::cell::{RefCell, UnsafeCell};
+use cortex_m::asm::wfi;
 
 use crate::framebuffer::Framebuffer;
 
 struct SwapchainState {
     read: u32,
-    write: u32,
+    free: Option<u32>,
+    pending: Option<u32>,
+    write: Option<u32>,
 }
 
 pub struct Swapchain {
@@ -19,7 +21,6 @@ unsafe impl Sync for Swapchain {}
 
 pub struct SwapchainImage<'a> {
     framebuffer: &'a mut Framebuffer,
-    index: u32,
     state: &'a Mutex<RefCell<SwapchainState>>,
 }
 
@@ -28,14 +29,9 @@ impl SwapchainImage<'_> {
         critical_section::with(|cs| {
             let state = self.state.borrow(cs);
             let mut state_mut = state.borrow_mut();
-            let next_write = match (self.index, state_mut.read) {
-                (0, 1) | (1, 0) => 2,
-                (0, 2) | (2, 0) => 1,
-                (1, 2) | (2, 1) => 0,
-                _ => unreachable!()
-            };
-            state_mut.write = next_write;
-            state_mut.read = self.index;
+            if let Some(write) = state_mut.write.take() {
+                state_mut.pending = Some(write);
+            }
         })
     }
 
@@ -53,29 +49,48 @@ impl Swapchain {
                 UnsafeCell::new(Framebuffer::new()),
             ],
             state: Mutex::new(RefCell::new(SwapchainState {
-                read: 0,
-                write: 1,
+                write: Some(0),
+                free: Some(1),
+                pending: None,
+                read: 2,
             }))
         }
     }
 
     pub fn acquire_next<'a>(&'a self) -> SwapchainImage<'a> {
-        let (framebuffer, index) = critical_section::with(|cs| {
+        critical_section::with(|cs| {
             let state = self.state.borrow(cs);
-            unsafe { (&mut *self.buffers[state.borrow().write as usize].get(), state.borrow().write) }
-        });
-        SwapchainImage {
-            framebuffer,
-            index,
-            state: &self.state
-        }
+            let mut state_mut = state.borrow_mut();
+            let framebuffer = loop {
+                let index = if let Some(write) = state_mut.write {
+                    Some(write)
+                } else if let Some(free) = state_mut.free.take() {
+                    state_mut.write = Some(free);
+                    Some(free)
+                } else {
+                    None
+                };
+                if let Some(index) = index {
+                    break unsafe { &mut *self.buffers[index as usize].get() };
+                }
+                wfi();
+            };
+            SwapchainImage {
+                framebuffer,
+                state: &self.state
+            }
+        })
     }
 
     pub fn read<'a>(&'a self) -> &'a Framebuffer {
         critical_section::with(|cs| {
             let state = self.state.borrow(cs);
-            let read = state.borrow().read;
-            unsafe { & *self.buffers[read as usize].get() }
+            let mut state_mut = state.borrow_mut();
+            if let Some(pending) = state_mut.pending.take() {
+                state_mut.free = Some(state_mut.read);
+                state_mut.read = pending;
+            }
+            unsafe { &*self.buffers[state_mut.read as usize].get() }
         })
     }
 }

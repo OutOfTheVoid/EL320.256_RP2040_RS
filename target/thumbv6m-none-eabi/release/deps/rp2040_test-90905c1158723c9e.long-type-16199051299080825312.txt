@@ -1,1 +1,0 @@
-waveshare_rp2040_zero::rp2040_hal::Spi<waveshare_rp2040_zero::rp2040_hal::spi::Disabled, SPI0, (waveshare_rp2040_zero::rp2040_hal::gpio::Pin<waveshare_rp2040_zero::rp2040_hal::gpio::bank0::Gpio3, FunctionSpi, PullDown>, waveshare_rp2040_zero::rp2040_hal::gpio::Pin<waveshare_rp2040_zero::rp2040_hal::gpio::bank0::Gpio2, FunctionSio<SioOutput>, PullDown>)>
